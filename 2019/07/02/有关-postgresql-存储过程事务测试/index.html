@@ -98,16 +98,16 @@
 <meta name="keywords" content="postgresql,database,sql,pgsql function">
 <meta property="og:type" content="article">
 <meta property="og:title" content="有关 postgresql 存储过程事务测试">
-<meta property="og:url" content="http://walterz.com/2019/07/02/有关-postgresql-存储过程事务测试/index.html">
+<meta property="og:url" content="http://zaltercitty.com/2019/07/02/有关-postgresql-存储过程事务测试/index.html">
 <meta property="og:site_name" content="博客">
 <meta property="og:description" content="事情背景事情起源于最近需要对数据库的部分数据进行清洗工作，由于 pg 存储过程比较强大，所以采用编写 pg 存储过程来实现数据清洗与迁移。但是对于 pg 存储过程的事务管理等情况，并不是很明确。比如：  执行时间过长，会不会在处理过程中  block pg 其他操作 执行中，其他的 pg 操作会不会对当前的存储过程造成影响  部分说明 pg 版本 9.5 pg 9.5 版本的存储过程，准确来说是一">
 <meta property="og:locale" content="zh-hans">
-<meta property="og:image" content="http://walterz.com/2019/07/02/有关-postgresql-存储过程事务测试/pg_transaction_test_result.png">
-<meta property="og:updated_time" content="2019-07-09T08:53:22.179Z">
+<meta property="og:image" content="http://zaltercitty.com/2019/07/02/有关-postgresql-存储过程事务测试/pg_transaction_test_result.png">
+<meta property="og:updated_time" content="2019-07-09T09:24:34.374Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="有关 postgresql 存储过程事务测试">
 <meta name="twitter:description" content="事情背景事情起源于最近需要对数据库的部分数据进行清洗工作，由于 pg 存储过程比较强大，所以采用编写 pg 存储过程来实现数据清洗与迁移。但是对于 pg 存储过程的事务管理等情况，并不是很明确。比如：  执行时间过长，会不会在处理过程中  block pg 其他操作 执行中，其他的 pg 操作会不会对当前的存储过程造成影响  部分说明 pg 版本 9.5 pg 9.5 版本的存储过程，准确来说是一">
-<meta name="twitter:image" content="http://walterz.com/2019/07/02/有关-postgresql-存储过程事务测试/pg_transaction_test_result.png">
+<meta name="twitter:image" content="http://zaltercitty.com/2019/07/02/有关-postgresql-存储过程事务测试/pg_transaction_test_result.png">
 
 
 
@@ -115,7 +115,7 @@
 
   
   
-  <link rel="canonical" href="http://walterz.com/2019/07/02/有关-postgresql-存储过程事务测试/">
+  <link rel="canonical" href="http://zaltercitty.com/2019/07/02/有关-postgresql-存储过程事务测试/">
 
 
 
@@ -190,7 +190,7 @@
     </div>
     
       
-        <h1 class="site-subtitle" itemprop="description">WalterZ</h1>
+        <h1 class="site-subtitle" itemprop="description">ZalterC</h1>
       
     
     
@@ -299,7 +299,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://walterz.com/blog/2019/07/02/有关-postgresql-存储过程事务测试/">
+    <link itemprop="mainEntityOfPage" href="http://zaltercitty.com/blog/2019/07/02/有关-postgresql-存储过程事务测试/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="汤了个包子 —— 随心所欲而不逾矩">
@@ -357,7 +357,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-07-09 08:53:22" itemprop="dateModified" datetime="2019-07-09T08:53:22Z">2019-07-09</time>
+                <time title="Modified: 2019-07-09 09:24:34" itemprop="dateModified" datetime="2019-07-09T09:24:34Z">2019-07-09</time>
               </span>
             
           
@@ -440,21 +440,30 @@
 <li>数据库: pg 9.5</li>
 </ul>
 <h4 id="步骤："><a href="#步骤：" class="headerlink" title="步骤："></a>步骤：</h4><ul>
-<li>准备好存储过程。</li>
-<li>在存储过程执行前。 执行中：包括对数据进行的各操作。 执行完成后。加入打印当前事务的事务id。从而判断整个过程是否在同一个事务里:<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RAISE NOTICE '%', txid_current();</span><br></pre></td></tr></table></figure></li>
-<li>伪代码如下(无法直接执行，涉及到项目数据，进行伪代码描述)：<figure class="highlight sql"><figcaption><span>pgsql</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> <span class="keyword">REPLACE</span> <span class="keyword">FUNCTION</span> transaction_test()</span><br><span class="line">  <span class="keyword">RETURNS</span> <span class="built_in">text</span> <span class="keyword">AS</span></span><br><span class="line">$$</span><br><span class="line"><span class="keyword">DECLARE</span></span><br><span class="line">  some_var <span class="built_in">text</span>;</span><br><span class="line">  update_sql text;</span><br><span class="line">  delete_sql text;</span><br><span class="line">  rec RECORD;</span><br><span class="line">  <span class="comment">-- add other def</span></span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">  <span class="comment">-- here begin the function</span></span><br><span class="line">  <span class="comment">-- init</span></span><br><span class="line">  some_var := <span class="string">'some_var'</span>;</span><br><span class="line">  update_sql := '<span class="keyword">UPDATE</span> a <span class="keyword">SET</span> b = c <span class="keyword">WHERE</span> a.d = e<span class="string">'</span></span><br><span class="line"><span class="string">  delete_sql := '</span><span class="keyword">DELETE</span> <span class="keyword">FROM</span> a <span class="keyword">WHERE</span> b = f<span class="string">'</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  -- print the '</span><span class="keyword">transaction</span> <span class="keyword">id</span><span class="string">' before data process</span></span><br><span class="line"><span class="string">  RAISE NOTICE '</span>%<span class="string">', txid_current();</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  -- data process</span></span><br><span class="line"><span class="string">  FOR rec in SELECT * FROM a LOOP</span></span><br><span class="line"><span class="string">    PERFORM update_sql;</span></span><br><span class="line"><span class="string">    PERFORM delete_sql;</span></span><br><span class="line"><span class="string">    -- print the '</span><span class="keyword">transaction</span> <span class="keyword">id</span><span class="string">' in data process</span></span><br><span class="line"><span class="string">    RAISE NOTICE '</span>%<span class="string">', txid_current();</span></span><br><span class="line"><span class="string">  END LOOP;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  -- print the '</span><span class="keyword">transaction</span> <span class="keyword">id</span><span class="string">' after data process</span></span><br><span class="line"><span class="string">  RAISE NOTICE '</span>%<span class="string">', txid_current();</span></span><br><span class="line"><span class="string">  RETURNS '</span>ok<span class="string">';</span></span><br><span class="line"><span class="string">END;</span></span><br><span class="line"><span class="string">$$ LANGUAGE '</span>plpgsql<span class="string">';</span></span><br></pre></td></tr></table></figure>
+<li><p>准备好存储过程。</p>
+</li>
+<li><p>在存储过程执行前。 执行中：包括对数据进行的各操作。 执行完成后。加入打印当前事务的事务id。从而判断整个过程是否在同一个事务里:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RAISE NOTICE '%', txid_current();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>伪代码如下(无法直接执行，涉及到项目数据，进行伪代码描述)：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> <span class="keyword">REPLACE</span> <span class="keyword">FUNCTION</span> transaction_test()</span><br><span class="line">  <span class="keyword">RETURNS</span> <span class="built_in">text</span> <span class="keyword">AS</span></span><br><span class="line">$$</span><br><span class="line"><span class="keyword">DECLARE</span></span><br><span class="line">  some_var <span class="built_in">text</span>;</span><br><span class="line">  update_sql text;</span><br><span class="line">  delete_sql text;</span><br><span class="line">  rec RECORD;</span><br><span class="line">  <span class="comment">-- add other def</span></span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">  <span class="comment">-- here begin the function</span></span><br><span class="line">  <span class="comment">-- init</span></span><br><span class="line">  some_var := <span class="string">'some_var'</span>;</span><br><span class="line">  update_sql := '<span class="keyword">UPDATE</span> a <span class="keyword">SET</span> b = c <span class="keyword">WHERE</span> a.d = e<span class="string">'</span></span><br><span class="line"><span class="string">  delete_sql := '</span><span class="keyword">DELETE</span> <span class="keyword">FROM</span> a <span class="keyword">WHERE</span> b = f<span class="string">'</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  -- print the '</span><span class="keyword">transaction</span> <span class="keyword">id</span><span class="string">' before data process</span></span><br><span class="line"><span class="string">  RAISE NOTICE '</span>%<span class="string">', txid_current();</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  -- data process</span></span><br><span class="line"><span class="string">  FOR rec in SELECT * FROM a LOOP</span></span><br><span class="line"><span class="string">    PERFORM update_sql;</span></span><br><span class="line"><span class="string">    PERFORM delete_sql;</span></span><br><span class="line"><span class="string">    -- print the '</span><span class="keyword">transaction</span> <span class="keyword">id</span><span class="string">' in data process</span></span><br><span class="line"><span class="string">    RAISE NOTICE '</span>%<span class="string">', txid_current();</span></span><br><span class="line"><span class="string">  END LOOP;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  -- print the '</span><span class="keyword">transaction</span> <span class="keyword">id</span><span class="string">' after data process</span></span><br><span class="line"><span class="string">  RAISE NOTICE '</span>%<span class="string">', txid_current();</span></span><br><span class="line"><span class="string">  RETURNS '</span>ok<span class="string">';</span></span><br><span class="line"><span class="string">END;</span></span><br><span class="line"><span class="string">$$ LANGUAGE '</span>plpgsql<span class="string">';</span></span><br></pre></td></tr></table></figure>
 
 </li>
 </ul>
 <h4 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h4><ol>
-<li>开两个窗口 A 和 B, 在 A 中查看会被改动表的数据。并且在存储过程执行中，多次查询该表状态。 侧面验证在存储过程执行时，不会对现有的 pg 业务造成影响：<ul>
+<li><p>开两个窗口 A 和 B, 在 A 中查看会被改动表的数据。并且在存储过程执行中，多次查询该表状态。 侧面验证在存储过程执行时，不会对现有的 pg 业务造成影响：</p>
+<ul>
 <li>不会 block 其他操作</li>
 <li>不会查询到本应该在处理函数执行完之后才会有的结果。</li>
 </ul>
 </li>
-<li>在 B 中执行函数, 开始数据处理：<figure class="highlight sql"><figcaption><span>pgsql</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> transaction_test();</span><br></pre></td></tr></table></figure></li>
-<li>回窗口 A 查看数据库状态</li>
-<li>回到 B 窗口，等待执行完毕。 查看打印日志。显然，事务 id 一直是同一个:<br><img src="pg_transaction_test_result.png" alt="pg事务测试结果"><br>显然，打印的事务 id 一直是同一个。</li>
+<li><p>在 B 中执行函数, 开始数据处理：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> transaction_test();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>回窗口 A 查看数据库状态</p>
+</li>
+<li><p>回到 B 窗口，等待执行完毕。 查看打印日志。显然，事务 id 一直是同一个:<br><img src="pg_transaction_test_result.png" alt="pg事务测试结果"><br>显然，打印的事务 id 一直是同一个。</p>
+</li>
 </ol>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>综上描述， pg 存储过程的整个执行， 是在一个事务里进行的。而且， 在执行过程中，对表的增删改查， 都不会影响其他 session 对表的使用。<br>至于说，这个事务是怎么管理的。有资料表明，所有的 pg 函数以及触发器执行都是包含在一个外层查询建立的事务中。 所以, 对于函数提本体来说，是在同一个事务中了。当然，有异常处理等情况， 是有次级事务管理。 不在当前讨论范围。</p>
 <h5 id="参考资料-https-www-postgresql-org-docs-9-5-plpgsql-structure-html"><a href="#参考资料-https-www-postgresql-org-docs-9-5-plpgsql-structure-html" class="headerlink" title="参考资料:  https://www.postgresql.org/docs/9.5/plpgsql-structure.html"></a>参考资料:  <a href="https://www.postgresql.org/docs/9.5/plpgsql-structure.html" target="_blank" rel="noopener">https://www.postgresql.org/docs/9.5/plpgsql-structure.html</a></h5>
@@ -491,7 +500,7 @@
   <li class="post-copyright-link">
     <strong>Post link: </strong>
     
-    <a href="http://walterz.com/2019/07/02/有关-postgresql-存储过程事务测试/" title="有关 postgresql 存储过程事务测试">http://walterz.com/2019/07/02/有关-postgresql-存储过程事务测试/</a>
+    <a href="http://zaltercitty.com/2019/07/02/有关-postgresql-存储过程事务测试/" title="有关 postgresql 存储过程事务测试">http://zaltercitty.com/2019/07/02/有关-postgresql-存储过程事务测试/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
@@ -624,6 +633,8 @@
                     
                       
                     
+                      
+                    
                     <span class="site-state-item-count">3</span>
                     <span class="site-state-item-name">categories</span>
                   
@@ -636,6 +647,12 @@
                 <div class="site-state-item site-state-tags">
                   
                     
+                    
+                      
+                    
+                      
+                    
+                      
                     
                       
                     
@@ -784,6 +801,15 @@
 
 
 
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=66506033";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
