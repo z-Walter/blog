@@ -380,18 +380,6 @@
           
             
             
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">Comments: </span>
-                <a href="/blog/2019/06/30/第一篇博客/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/06/30/第一篇博客/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -514,10 +502,7 @@
           
 
   
-    <div class="comments" id="comments">
-      <div id="disqus_thread">
-        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
-      </div>
+    <div class="comments" id="gitalk-container">
     </div>
 
   
@@ -643,6 +628,17 @@
                   <a href="https://github.com/zaltercitty" title="GitHub &rarr; https://github.com/zaltercitty" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
                 </span>
               
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="/blog/343710933@qq.com" title="E-Mail &rarr; 343710933@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
             </div>
           
 
@@ -701,7 +697,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2019 – <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
@@ -869,39 +865,36 @@
   
 
   
+
+
   
+    
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+
+
+<script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
 <script>
-  function loadCount() {
-    var d = document, s = d.createElement('script');
-    s.src = 'https://cmt.disqus.com/count.js';
-    s.id = 'dsq-count-scr';
-    (d.head || d.body).appendChild(s);
-  }
-  // defer loading until the whole page loading is completed
-  window.addEventListener('load', loadCount, false);
+  var gitalk = new Gitalk({
+    clientID: 'd693bcd316b1da1a36c4',
+    clientSecret: '5206b15554784b7109b8e818f43e23805529bb85',
+    repo: 'https://github.com/zaltercitty/blog',
+    owner: 'zaltercitty',
+    admin: ['zaltercitty'],
+    id: md5(location.pathname),
+    
+      language: 'zh-CN',
+    
+    distractionFreeMode: 'true'
+  });
+  gitalk.render('gitalk-container');
 </script>
-
-
-<script>
-  var disqus_config = function() {
-    this.page.url = "http://zaltercitty.com/2019/06/30/第一篇博客/";
-    this.page.identifier = "2019/06/30/第一篇博客/";
-    this.page.title = '我的第一篇博客';
-    };
-  function loadComments() {
-    var d = document, s = d.createElement('script');
-    s.src = 'https://cmt.disqus.com/embed.js';
-    s.setAttribute('data-timestamp', '' + +new Date());
-    (d.head || d.body).appendChild(s);
-  }
-  
-    window.addEventListener('load', loadComments, false);
-  
-</script>
-
-
-
-
 
   
 
